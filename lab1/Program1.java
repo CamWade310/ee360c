@@ -70,66 +70,42 @@ public class Program1 extends AbstractProgram1 {
 		int n = marriage.getNumberOfAdvisers();
 		ArrayList<ArrayList<Integer>> adviser_preferences = get_adviser_preferences(n, marriage.getStudentGPAs(), marriage.getAdviserLocations(), marriage.getStudentLocations());
 		ArrayList<ArrayList<Integer>> student_preferences = marriage.getStudentPreference();
-		int[] adviser_preference_index = new int[n];
+		int[] adviser_preferences_index = new int[n];
 
+		// student_matching: index is student, value is adviser (-1 if empty)
+		// initially all students are free
 		ArrayList<Integer> student_matching = new ArrayList<Integer>();
-		for(int adviser_index=0; adviser_index<n; adviser_index++) {
+		for(int student=0; student<n; student++) {
 			student_matching.add(-1);
 		}
 
-		while(student_matching.contains(-1)) {
-			// offer_list: index is students, values are list of advisers who are giving offers
-			ArrayList<ArrayList<Integer>> offer_list = new ArrayList<ArrayList<Integer>>();
-			for(int i=0; i<n; i++) {
-				ArrayList<Integer> list = new ArrayList<Integer>();
-				offer_list.add(list);
-			}
-			
-			// populate the offer_list
-			for(int adviser=0; adviser<n; adviser++) {
-				if(student_matching.indexOf(adviser) == -1) {
-					int student = adviser_preferences.get(adviser).get(adviser_preference_index[adviser]);
-					adviser_preference_index[adviser]++;
-					offer_list.get(student).add(adviser);
-				}	
-			}
-			
-			// have a list of preferences already sorted using comparator,
-			// add the current match of adviser
-			// take the one from the first index
-			// matching
-			for(int student=0; student<n; student++) {
-				for(int offer_index=0; offer_index<student_offer_size; offer_index++) {
-					int adviser = student_matching.get(student);
-					// if student doesnt have adviser, take adviser
-					if(adviser == -1) {
-						student_matching.set(student, adviser);
-					}
-					// if student has adviser, choose which one
-					else {
-						if() {
+		// initially all advisers are free
+		ArrayList<Integer> free_advisers = new ArrayList<Integer>();
+		for(int adviser=0; adviser<n; adviser++) {
+			free_advisers.add(adviser);
+		}
 
-						}
-					}
+		while(!free_advisers.isEmpty()) {
+			int adviser = free_advisers.get(0);
+			int student = adviser_preferences.get(adviser).get(adviser_preferences_index[adviser]);
+			adviser_preferences_index[adviser]++;
+			
+			if(student_matching.get(student) == -1) {
+				student_matching.set(student, adviser);
+				free_advisers.remove(0);
+			}
+			else {
+				int adviser_current = student_matching.get(student);
+				if(student_preferences.get(student).indexOf(adviser) < student_preferences.get(student).indexOf(adviser_current)) {
+					student_matching.set(student, adviser);
+					free_advisers.remove(0);
+					free_advisers.add(adviser_current);
 				}
 			}
 		}
-			
-		// start loop, advisors index
-		// create ArrayList with all advisers have no student, call indexOf, if indexOf returns -1, then the adviser does not have a student
-		// check if adviser has student
-		// ArrayList of Integers (offers), index is adviser, value is student offered, -1 if adviser does not give offer
-		// keep finding indexOf student, and compare offers
-		// if student doesn't have adviser, take it
-		// if student does have adviser, compare in preference list
-		// if higher, swap
-		// if lower, ignore offer
-		// need something to keep track of index of each adviser's preference list
-
-		// matching is an ArrayList<Integer>, index is student, value is adviser
 
 		marriage.setResidentMatching(student_matching);
-		return null;
+		return marriage;
     }
 
 	/**
@@ -160,36 +136,3 @@ public class Program1 extends AbstractProgram1 {
 	}
 }
 
-class AdviserComparator implements Comparator<int> {
-	private ArrayList<Integer> student_preferences;
-	
-	AdviserComparator(ArrayList<Integer> student_preferences) {
-		this.student_preferences = student_preferences;
-	}
-
-	@Override
-	public int compare(int a1, int a2) {
-		// TODO: change this
-		// NOTE: more  preferred student should be closer to index 0
-		if(s1.getGPA() > s2.getGPA()) {
-			return -1;
-		}
-		else if(s1.getGPA() < s2.getGPA()) {
-			return 1;
-		}
-
-		if(get_distance(x, y, s1.getX(), s1.getY()) < get_distance(x, y, s2.getX(), s2.getY())) {
-			return -1;
-		}
-		else if(get_distance(x, y, s1.getX(), s1.getY()) > get_distance(x, y, s2.getX(), s2.getY())) {
-			return 1;
-		}
-		
-		// code should never get down here
-		return 0;
-	}
-
-	private double get_distance(double x1, double y1, double x2, double y2) {
-		return Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));	
-	}
-}
