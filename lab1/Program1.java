@@ -30,9 +30,8 @@ public class Program1 extends AbstractProgram1 {
      */
     public boolean isStableMatching(Matching marriage) {
 		int n = marriage.getNumberOfAdvisers();
-		int[] adviser_matching = new int[n];
 		ArrayList<Integer> student_matching = marriage.getStudentMatching();
-		int[][] adviser_preferences = get_adviser_preferences(n, marriage.getStudentGPAs(), marriage.getAdviserLocations(), marriage.getStudentLocations());
+		ArrayList<ArrayList<Integer>> adviser_preferences = get_adviser_preferences(n, marriage.getStudentGPAs(), marriage.getAdviserLocations(), marriage.getStudentLocations());
 		ArrayList<ArrayList<Integer>> student_preferences = marriage.getStudentPreference();
 	
 		// DEBUG: Testing if get_adviser_preferences worked
@@ -40,37 +39,24 @@ public class Program1 extends AbstractProgram1 {
 		// 	System.out.println("adviser " + adviser_index + ": " + Arrays.toString(adviser_preferences[adviser_index]));
 		// }
 		
-		// create adviser_matching
-		for(int student_index=0; student_index<n; student_index++) {
-			adviser_matching[student_matching.get(student_index)] = student_index;;
-		}
-
 		for(int student_1=0; student_1<n; student_1++) {
 			int adviser_1 = student_matching.get(student_1);
 			
 			for(int i=0; i<n; i++) {
 				int adviser_2 = student_preferences.get(student_1).get(i);
-				int student_2 = adviser_matching[adviser_2];
+				int student_2 = student_matching.indexOf(adviser_2);
 				if(adviser_2 == adviser_1) {
 					break;
 				}
-				if(adviser_preferences[adviser_2][student_1] > adviser_preferences[adviser_2][student_2]) {
+				if(adviser_preferences.get(adviser_2).indexOf(student_1) < adviser_preferences.get(adviser_2).indexOf(student_2)) {
+					// DEBUG: Output what the matching was
+					// didn't actually do it
 					return false;
 				}	
 			}
 		}
 
 		return true;
-
-		// go through student_index
-		// find adviser who is matched to student_index in student_matching
-		// go through student_pref to check higher priority advisers than adviser1
-		// if adviser_index reaches adviser1, then that student is stable
-		// check who adviser_index matched to in adviser_matching
-		// check adviser_pref if student2 > student1
-		// if true, not stable, retunr false;
-		//
-		//
     }
 
     /**
@@ -81,17 +67,30 @@ public class Program1 extends AbstractProgram1 {
      * @return A stable Matching.
      */
     public Matching stableMarriageGaleShapley(Matching marriage) {
-        /* TODO implement this function */
-        return null; /* TODO remove this line */
+		// get advisor's preference list
+		// get student preference list
+		// start loop, advisors index
+		// create ArrayList with all advisers have no student, call indexOf, if indexOf returns -1, then the adviser does not have a student
+		// check if adviser has student
+		// ArrayList of Integers (offers), index is adviser, value is student offered, -1 if adviser does not give offer
+		// keep finding indexOf student, and compare offers
+		// if student doesn't have adviser, take it
+		// if student does have adviser, compare in preference list
+		// if higher, swap
+		// if lower, ignore offer
+		// need something to keep track of index of each adviser's preference list
+
+		// matching is an ArrayList<Integer>, index is student, value is adviser
+		return null;
     }
 
 	/**
 	 * Determines the preference lists for advisers based on student GPA and location
 	 *
-	 * @return advisers' preference list, indexes are students, values are priority
+	 * @return advisers' preference list, indexes are priority (0 is most preferred), values are students
 	 */
-	private int[][]  get_adviser_preferences(int n, ArrayList<Double> student_GPAs, ArrayList<Coordinate> adviser_locations, ArrayList<Coordinate> student_locations) {
-		int[][] adviser_preferences = new int[n][n];
+	private ArrayList<ArrayList<Integer>> get_adviser_preferences(int n, ArrayList<Double> student_GPAs, ArrayList<Coordinate> adviser_locations, ArrayList<Coordinate> student_locations) {
+		ArrayList<ArrayList<Integer>> adviser_preferences = new ArrayList<ArrayList<Integer>>();
 
 		for(int adviser_index=0; adviser_index<n; adviser_index++) {
 			// creates a list of students and sort them
@@ -103,9 +102,11 @@ public class Program1 extends AbstractProgram1 {
 			Collections.sort(students, new StudentComparator(adviser_locations.get(adviser_index).x, adviser_locations.get(adviser_index).y));
 			
 			// places sorted list of students into adviser's preference list
+			ArrayList<Integer> preference = new ArrayList<Integer>();
 			for(int priority=0; priority<n; priority++) {
-				adviser_preferences[adviser_index][students.get(priority).getIndex()] = priority;
+				preference.add(students.get(priority).getIndex());
 			}
+			adviser_preferences.add(preference);
 		}
 		return adviser_preferences;
 	}

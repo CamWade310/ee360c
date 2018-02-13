@@ -48,18 +48,18 @@ class StudentComparator implements Comparator<Student> {
 
 	@Override
 	public int compare(Student s1, Student s2) {
-		// NOTE: less preferred student should be closer to index 0
-		if(s1.getGPA() < s2.getGPA()) {
+		// NOTE: more  preferred student should be closer to index 0
+		if(s1.getGPA() > s2.getGPA()) {
 			return -1;
 		}
-		else if(s1.getGPA() > s2.getGPA()) {
+		else if(s1.getGPA() < s2.getGPA()) {
 			return 1;
 		}
 
-		if(get_distance(x, y, s1.getX(), s1.getY()) > get_distance(x, y, s2.getX(), s2.getY())) {
+		if(get_distance(x, y, s1.getX(), s1.getY()) < get_distance(x, y, s2.getX(), s2.getY())) {
 			return -1;
 		}
-		else if(get_distance(x, y, s1.getX(), s1.getY()) < get_distance(x, y, s2.getX(), s2.getY())) {
+		else if(get_distance(x, y, s1.getX(), s1.getY()) > get_distance(x, y, s2.getX(), s2.getY())) {
 			return 1;
 		}
 		
