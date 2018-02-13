@@ -30,28 +30,47 @@ public class Program1 extends AbstractProgram1 {
      */
     public boolean isStableMatching(Matching marriage) {
 		int n = marriage.getNumberOfAdvisers();
-		// int[] advisor_matching = new int[n];
-		// ArrayList<Integer> student_matching = marriage.getStudentMatching();
-		int[][] advisor_preferences = get_advisor_preferences(n, marriage.getStudentGPAs(), marriage.getAdviserLocations(), marriage.getStudentLocations());
+		int[] adviser_matching = new int[n];
+		ArrayList<Integer> student_matching = marriage.getStudentMatching();
+		int[][] adviser_preferences = get_adviser_preferences(n, marriage.getStudentGPAs(), marriage.getAdviserLocations(), marriage.getStudentLocations());
+		ArrayList<ArrayList<Integer>> student_preferences = marriage.getStudentPreference();
+	
+		// DEBUG: Testing if get_adviser_preferences worked
+		// for(int adviser_index=0; adviser_index<n; adviser_index++) {
+		// 	System.out.println("adviser " + adviser_index + ": " + Arrays.toString(adviser_preferences[adviser_index]));
+		// }
 		
-		// DEBUG: Testing if get_advisor_preferences worked
-		for(int advisor_index=0; advisor_index<n; advisor_index++) {
-			System.out.println("Advisor " + advisor_index + ": " + Arrays.toString(advisor_preferences[advisor_index]));
+		// create adviser_matching
+		for(int student_index=0; student_index<n; student_index++) {
+			adviser_matching[student_matching.get(student_index)] = student_index;;
 		}
-		// for(int student_index=0; student_index<n; student_index++) {
-		// 	advisor_matching[student_matching.get(student_index)]= student_index;
-		// }
 
-		// // check each student
-		// for(int student_index=0; student_index<n; student_index++) {
-		// 	// keep going until j reaches the advisor their currently matched with
-		// 	for(int j=0; j<n; j++) {
-		// 		// check if the advisor is matched with someone lower than student
-		// 		int advisor_index = student_matching.get(student_index);
-		// 		
-		// 	}
-		// }
-		return false; /* TODO remove this line */
+		for(int student_1=0; student_1<n; student_1++) {
+			int adviser_1 = student_matching.get(student_1);
+			
+			for(int i=0; i<n; i++) {
+				int adviser_2 = student_preferences.get(student_1).get(i);
+				int student_2 = adviser_matching[adviser_2];
+				if(adviser_2 == adviser_1) {
+					break;
+				}
+				if(adviser_preferences[adviser_2][student_1] > adviser_preferences[adviser_2][student_2]) {
+					return false;
+				}	
+			}
+		}
+
+		return true;
+
+		// go through student_index
+		// find adviser who is matched to student_index in student_matching
+		// go through student_pref to check higher priority advisers than adviser1
+		// if adviser_index reaches adviser1, then that student is stable
+		// check who adviser_index matched to in adviser_matching
+		// check adviser_pref if student2 > student1
+		// if true, not stable, retunr false;
+		//
+		//
     }
 
     /**
@@ -67,28 +86,28 @@ public class Program1 extends AbstractProgram1 {
     }
 
 	/**
-	 * Determines the preference lists for advisors based on student GPA and location
+	 * Determines the preference lists for advisers based on student GPA and location
 	 *
-	 * @return advisors' preference list, indexes are students, values are priority
+	 * @return advisers' preference list, indexes are students, values are priority
 	 */
-	private int[][]  get_advisor_preferences(int n, ArrayList<Double> student_GPAs, ArrayList<Coordinate> advisor_locations, ArrayList<Coordinate> student_locations) {
-		int[][] advisor_preferences = new int[n][n];
+	private int[][]  get_adviser_preferences(int n, ArrayList<Double> student_GPAs, ArrayList<Coordinate> adviser_locations, ArrayList<Coordinate> student_locations) {
+		int[][] adviser_preferences = new int[n][n];
 
-		for(int advisor_index=0; advisor_index<n; advisor_index++) {
+		for(int adviser_index=0; adviser_index<n; adviser_index++) {
 			// creates a list of students and sort them
 			ArrayList<Student> students = new ArrayList<Student>();
 			for(int student_index=0; student_index<n; student_index++) {
 				Student student = new Student(student_index, student_GPAs.get(student_index), student_locations.get(student_index).x, student_locations.get(student_index).y);
 				students.add(student);
 			}
-			Collections.sort(students, new StudentComparator(advisor_locations.get(advisor_index).x, advisor_locations.get(advisor_index).y));
+			Collections.sort(students, new StudentComparator(adviser_locations.get(adviser_index).x, adviser_locations.get(adviser_index).y));
 			
-			// places sorted list of students into advisor's preference list
+			// places sorted list of students into adviser's preference list
 			for(int priority=0; priority<n; priority++) {
-				advisor_preferences[advisor_index][students.get(priority).getIndex()] = priority;
+				adviser_preferences[adviser_index][students.get(priority).getIndex()] = priority;
 			}
 		}
-		return advisor_preferences;
+		return adviser_preferences;
 	}
 }
 

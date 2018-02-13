@@ -37,7 +37,7 @@ public class Student {
 }
 
 class StudentComparator implements Comparator<Student> {
-	// advisor's location
+	// adviser's location
 	private double x;
 	private double y;
 	
