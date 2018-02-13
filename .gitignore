@@ -1,5 +1,6 @@
 *.class
 *.sh
+*.tags
 
 EE\ 360C\ Book.pdf
 hw/
