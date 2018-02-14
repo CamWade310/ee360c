@@ -86,8 +86,8 @@ public class Program1 extends AbstractProgram1 {
 			free_advisers.add(0);
 		}
 
-		while(free_advisers.indexOf(0) != -1) {
-			int adviser = free_advisers.indexOf(0);
+		int adviser = free_advisers.indexOf(0);
+		while(adviser != -1 && adviser_preferences_index[adviser] != n) {
 			int student = adviser_preferences.get(adviser).get(adviser_preferences_index[adviser]);
 			adviser_preferences_index[adviser]++;
 			
@@ -103,6 +103,8 @@ public class Program1 extends AbstractProgram1 {
 					free_advisers.set(adviser_current, 0);
 				}
 			}
+
+			adviser = free_advisers.indexOf(0);
 		}
 
 		marriage.setResidentMatching(student_matching);

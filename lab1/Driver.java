@@ -2,6 +2,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import java.lang.System;
+
 public class Driver {
     public static String filename;
     public static boolean testBruteForce;
@@ -121,20 +123,42 @@ public class Driver {
         Program1 program = new Program1();
         boolean isStable;
 
-        if (testGS) {
+        if (testGS) {	
+			final long X = 50;
+			long totalTime = 0;
+			for(long i=0; i<X; i++) {
+				long startTime = System.nanoTime();
+            	Matching GSMatching = program.stableMarriageGaleShapley(problem);
+				totalTime += System.nanoTime() - startTime;
+			}
+			totalTime /= X;
+
             Matching GSMatching = program.stableMarriageGaleShapley(problem);
             System.out.println(GSMatching);
             isStable = program.isStableMatching(GSMatching);
             System.out.printf("%s: stable? %s\n", "Gale-Shapley", isStable);
             System.out.println();
+
+			System.out.printf("Time in nanoseconds: %,d\n", totalTime);
         }
 
         if (testBruteForce) {
-            Matching BFMatching = program.stableMarriageBruteForce(problem);
+			final long X = 10;
+			long totalTime = 0;
+			for(long i=0; i<X; i++) {
+				long startTime = System.nanoTime();
+				Matching BFMatching = program.stableMarriageBruteForce(problem);
+				totalTime += System.nanoTime() - startTime;
+			}
+			totalTime /= X;
+			
+			Matching BFMatching = program.stableMarriageBruteForce(problem);
             System.out.println(BFMatching);
             isStable = program.isStableMatching(BFMatching);
             System.out.printf("%s: stable? %s\n", "Brute Force", isStable);
             System.out.println();
+			
+			System.out.printf("Time in nanoseconds: %,d\n", totalTime);
         }
     }
 }
