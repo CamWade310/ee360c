@@ -1,8 +1,10 @@
 *.class
 *.sh
 *.tags
+*.zip
 
 EE\ 360C\ Book.pdf
+
 hw/
 lectures/
-
+test_script/
