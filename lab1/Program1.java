@@ -79,27 +79,28 @@ public class Program1 extends AbstractProgram1 {
 			student_matching.add(-1);
 		}
 
+		// free_advisers: index is adviser, value is free (0), not free (-1)
 		// initially all advisers are free
 		ArrayList<Integer> free_advisers = new ArrayList<Integer>();
 		for(int adviser=0; adviser<n; adviser++) {
-			free_advisers.add(adviser);
+			free_advisers.add(0);
 		}
 
-		while(!free_advisers.isEmpty()) {
-			int adviser = free_advisers.get(0);
+		while(free_advisers.indexOf(0) != -1) {
+			int adviser = free_advisers.indexOf(0);
 			int student = adviser_preferences.get(adviser).get(adviser_preferences_index[adviser]);
 			adviser_preferences_index[adviser]++;
 			
 			if(student_matching.get(student) == -1) {
 				student_matching.set(student, adviser);
-				free_advisers.remove(0);
+				free_advisers.set(adviser, -1);
 			}
 			else {
 				int adviser_current = student_matching.get(student);
 				if(student_preferences.get(student).indexOf(adviser) < student_preferences.get(student).indexOf(adviser_current)) {
 					student_matching.set(student, adviser);
-					free_advisers.remove(0);
-					free_advisers.add(adviser_current);
+					free_advisers.set(adviser, -1);
+					free_advisers.set(adviser_current, 0);
 				}
 			}
 		}
