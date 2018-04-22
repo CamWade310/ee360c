@@ -1,6 +1,6 @@
 
-//Name: (Fill this in)
-//EID: (Fill this in)
+//Name: Dayoung Lee
+//EID: DL29923
 
 
 public class Program3 {
@@ -46,10 +46,49 @@ public class Program3 {
      * could steal given the weight and volume capacity of his/her bag by using the 
      * VibraniumOreScenario instance.
      */
-     //TODO: Complete this method
+
+     //TODO: Test this method
      public int computeLoss() {
-        
-        return 0;
+        int N = vibraniumScenario.getNumOres();
+        int W = vibraniumScenario.getWeightCapacity();
+        int V = vibraniumScenario.getVolumeCapacity();
+        int[][][] value = new int[N+1][W+1][V+1];
+
+        // Initialize table of values
+        for(int n=0; n<=N; n++) {
+            for(int w=0; w<=W; w++) {
+                for(int v=0; v<=V; v++) {
+                    value[n][w][v] = 0;
+                }   
+            }
+        }
+
+        // DP solution
+        for(int n=1; n<=N; n++) {
+            for(int w=1; w<=W; w++) {
+                for(int v=1; v<=V; v++) {
+
+                    VibraniumOre ore = vibraniumScenario.getVibraniumOre(n-1);
+                    int price = ore.getPrice();
+                    int weight = ore.getWeight();
+                    int volume = ore.getVolume();
+
+                    if(w-weight >= 0 && v-volume >= 0) {
+                        int max = value[n-1][w-weight][v-volume] + price;
+                        if(value[n-1][w][v] > max) {
+                            max = value[n-1][w][v];
+                        }
+                        value[n][w][v] = max;
+                    }
+                    else {
+                        value[n][w][v] = value[n-1][w][v];
+                    }
+                    
+                }   
+            }
+        }
+
+        return value[N][W][V];
      }
 }
 
