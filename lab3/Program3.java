@@ -35,10 +35,33 @@ public class Program3 {
      * This method returns an integer that is maximum possible gain in the Wakandan economy
      * given a certain amount of Vibranium
      */
-    //TODO: Complete this function
     public int computeGain() {
+        int N = calculator.getNumProjects();
+        int V = calculator.getNumVibranium();
+       
+        int[][] gains = new int[N+1][V+1];
 
-        return 0;
+        // Initialize array of maximum gains
+        for(int n=0; n<=N; n++) {
+            for(int v=0; v<=V; v++) {
+                gains[n][v] = 0;
+            }
+        }
+
+        // DP solution
+        for(int n=1; n<=N; n++) {
+            for(int v=1; v<=V; v++) {
+                int max = 0;
+                for(int i=0; i<=v; i++) {
+                    if(calculator.calculateGain(n-1, i) + gains[n-1][v-i] > max) {
+                        max = calculator.calculateGain(n-1, i) + gains[n-1][v-i];
+                    }
+                }
+                gains[n][v] = max;
+            }
+        }
+        
+        return gains[N][V];
     }
 
     /*
@@ -47,7 +70,6 @@ public class Program3 {
      * VibraniumOreScenario instance.
      */
 
-     //TODO: Test this method
      public int computeLoss() {
         int N = vibraniumScenario.getNumOres();
         int W = vibraniumScenario.getWeightCapacity();
